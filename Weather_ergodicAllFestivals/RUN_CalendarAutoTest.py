@@ -1,10 +1,9 @@
+import time
 import requests
 import json
 import xlrd
 from xlutils.copy import copy
-from time import sleep
 import configparser
-
 
 """
 http://audi-pre.mobvoi.com/search/qa/?
@@ -14,79 +13,106 @@ version=40000&address=中国,北京市,北京市,朝阳区,北京市朝阳区惠
 output=lite
 """
 
+
 # B70618D8E8132A32D4BCD6D68EFD08E2
 
-class CalendarAutoTest():
+class CalendarAutoTest:
     def __init__(self):
 
-        self.CalendarResult = []
+        self.CalendarExpectedResult = []
+        self.CalendarActualResult = []
         self.CalendarQuery = []
+        self.CalendarName = []
         self.conf = configparser.ConfigParser()
         self.conf.read('config.ini')
         self.festivalsList = self.conf['festivals_list']
-        self.testYear = self.conf['year']
+        self.testYear = self.conf['year']['testYear']
+        self.testProject = self.conf['project']['projectName']
+        self.timestamp = time.strftime('%Y%m%d.%H%M%S', time.localtime(time.time()))
+        if self.testProject == "Audi":
+            self.appkey = "B70618D8E8132A32D4BCD6D68EFD08E2"
+        elif self.testProject == "Porsche":
+            self.appkey = "CE435BCB81636B363DBDCB2F41090605"
 
 
-
-    def postGetUrl(self,iquery):
-        newQuery = '%s年的%s是什么时候' % (str(self.testYear['testYear']), iquery)
+    def postGetUrl(self, iquery):
+        if self.testYear == 'null':
+            newQuery = '%s是什么时候' % (iquery)
+        else:
+            newQuery = '%s的%s是什么时候' % (str(self.testYear), iquery)
         self.CalendarQuery.append(newQuery)
         data = {
-                "query": newQuery,
-                # "appkey": "CE435BCB81636B363DBDCB2F41090605", # 保时捷普通话
-                "appkey": "B70618D8E8132A32D4BCD6D68EFD08E2", # Audi普通话
-                "version": "40000",
-                "address": "中国,北京市,北京市,朝阳区,北京市朝阳区惠新东街,14号,39.979515,116.424273",
-                "output": "lite",
-                }
-        baseURL = "http://audi-pre.mobvoi.com/search/qa/?"
-        headers = {"User-Agent":"Mozilla/5.0"}
-        res = requests.get(baseURL,params=data,headers=headers)
+            "query": newQuery,
+            "appkey": self.appkey,
+            "version": "40000",
+            "address": "中国,北京市,北京市,朝阳区,北京市朝阳区惠新东街,14号,39.979515,116.424273",
+            "output": "lite",
+        }
+
+        baseURL = "http://audi-pre.mobvoi.com/search/qa/?"                  # Stage 环境
+        # baseURL = "http://audi.mobvoi.com/search/qa/?"                    # Live 环境
+        # baseURL = "http://audi-dev.mobvoi.com/search/qa/?"                # dev 环境
+        headers = {"User-Agent": "Mozilla/5.0"}
+        res = requests.get(baseURL, params=data, headers=headers)
         res.encoding = "utf-8"
         html = res.text
         rDict = json.loads(html)
         # print(res.url)
+        self.CalendarName.append(iquery)
         displayText = rDict["languageOutput"]["displayText"]
         if displayText:
-            self.CalendarResult.append(str(displayText))
+            self.CalendarActualResult.append(str(displayText))
         else:
-            self.CalendarResult.append("NULL")
+            self.CalendarActualResult.append("NULL")
 
         print("=" * 50)
-        print("Query:",rDict["query"])
-        print("Domain:",rDict["domain"])
-        print("Display:",rDict["languageOutput"]["displayText"])
-        print("MessageId:",rDict["messageId"])
+        print("Query:", rDict["query"])
+        print("Domain:", rDict["domain"])
+        print("Display:", rDict["languageOutput"]["displayText"])
+        print("MessageId:", rDict["messageId"])
         print("=" * 50, "\n")
 
-
     def writeExcel(self):
+        rExcel = xlrd.open_workbook("CalendarList_%s.xls" % self.testProject, formatting_info=True)
+        rTable = rExcel.sheet_by_name(u'All_FestivalsList')
+        if self.testYear == '今年' or self.testYear == '2022年':
+            self.CalendarExpectedResult = rTable.col_values(1)[1::]                 # 除了标题行的所有第2列内容。
+        elif self.testYear == '明年' or self.testYear == '2023年':
+            self.CalendarExpectedResult = rTable.col_values(2)[1::]
+        elif self.testYear == '后年' or self.testYear == '2024年':
+            self.CalendarExpectedResult = rTable.col_values(3)[1::]
+
+        wExcel = copy(rExcel)
         try:
-            rExcel = xlrd.open_workbook("CalendarList.xls",formatting_info=True)
-            wExcel = copy(rExcel)
-            wTable = wExcel.get_sheet(0)
-            # row = 0 # 修改第一行
-            # col = 3 # 修改第3列
-            for i in range(len(self.CalendarResult)):
+            wTable = wExcel.get_sheet(1)
+
+            for i in range(len(self.CalendarActualResult)):
+                wTable.write(i + 1, 0, self.CalendarName[i])
                 wTable.write(i + 1, 1, self.CalendarQuery[i])
-                wTable.write(i + 1, 3, self.CalendarResult[i]) # xlwt对象的写方法，参数分别是行、列、值
-                wTable.write(i + 1, 4, '=IF(C2=D2,"PASS","FAIL")') #填写公式
+                wTable.write(i + 1, 2, self.CalendarExpectedResult[i])
+                wTable.write(i + 1, 3, self.CalendarActualResult[i])            # xlwt对象的写方法，参数分别是行、列、值
+                value1 = self.CalendarActualResult[i].replace('，',',').replace('。','.').replace(' ','')
+                value2 = self.CalendarExpectedResult[i].replace('，',',').replace('。','.').replace(' ','')
+                if value1 == value2:
+                    wTable.write(i + 1, 4, 'PASS')
+                else:
+                    wTable.write(i + 1, 4, 'FAIL')
         except Exception as e:
             raise e
         finally:
-            wExcel.save("CalendarList.xls") # xlwt 对象的保存方法，这时便覆盖掉了原来的 Excel
-            print("保存完成！")
-
+            wExcel.save("CalendarList_Result_%s_%s.xls" % (self.testProject,self.timestamp))         # xlwt对象的保存方法;
+            print('保存完成！---> CalendarList_Result_%s_%s.xls' % (self.testProject,self.timestamp))
 
     def runTest(self):
         print("====== Run to Asterix calendar automation test! =====")
-        for i,j in zip(self.festivalsList,range(len(self.festivalsList))):
+        print("Project is %s, appkey is %s" % (self.testProject, self.appkey))
+        print('Test keywords is " %s " ' % self.testYear)
+        for i, j in zip(self.festivalsList, range(len(self.festivalsList))):
             self.postGetUrl(self.festivalsList[i])
-            print("完成:%s/%s" %(j+1 ,len(self.festivalsList)))
-            sleep(3)
+            print("完成:%s/%s..." % (j + 1, len(self.festivalsList)))
+            time.sleep(1)
         self.writeExcel()
         print("====================== Done! ========================")
-
 
 
 if __name__ == "__main__":
