@@ -14,8 +14,6 @@ output=lite
 """
 
 
-# B70618D8E8132A32D4BCD6D68EFD08E2
-
 class CalendarAutoTest:
     def __init__(self):
 
@@ -28,11 +26,19 @@ class CalendarAutoTest:
         self.festivalsList = self.conf['festivals_list']
         self.testYear = self.conf['year']['testYear']
         self.testProject = self.conf['project']['projectName']
+        self.testLanguage = self.conf['language']['testLanguage']
         self.timestamp = time.strftime('%Y%m%d.%H%M%S', time.localtime(time.time()))
-        if self.testProject == "Audi":
-            self.appkey = "B70618D8E8132A32D4BCD6D68EFD08E2"
-        elif self.testProject == "Porsche":
-            self.appkey = "CE435BCB81636B363DBDCB2F41090605"
+        if self.testProject == 'Audi' and self.testLanguage == 'mandarin':
+            self.appkey = 'B70618D8E8132A32D4BCD6D68EFD08E2'                # Audi - sop2 - 普通话
+        elif self.testProject == 'Audi' and self.testLanguage == 'cantonese':
+            self.appkey = '5DDD2B9CCD6977BDFF3E109FBFBD0E15'                # Audi - sop2 - 粤语
+        elif self.testProject == 'Porsche':
+            self.appkey = 'CE435BCB81636B363DBDCB2F41090605'                # Porsche - 普通话
+        self.test_parameters = "Project is %s. \nTest language is %s. \nAppkey is %s. \nTest keywords is %s." % (
+            self.testProject,
+            self.testLanguage,
+            self.appkey,
+            self.testYear)
 
 
     def postGetUrl(self, iquery):
@@ -73,7 +79,7 @@ class CalendarAutoTest:
         print("=" * 50, "\n")
 
     def writeExcel(self):
-        rExcel = xlrd.open_workbook("CalendarList_%s.xls" % self.testProject, formatting_info=True)
+        rExcel = xlrd.open_workbook("./template/CalendarList_%s_%s.xls"%(self.testProject,self.testLanguage),formatting_info=True)
         rTable = rExcel.sheet_by_name(u'All_FestivalsList')
         if self.testYear == '今年' or self.testYear == '2022年':
             self.CalendarExpectedResult = rTable.col_values(1)[1::]                 # 除了标题行的所有第2列内容。
@@ -100,13 +106,14 @@ class CalendarAutoTest:
         except Exception as e:
             raise e
         finally:
-            wExcel.save("CalendarList_Result_%s_%s.xls" % (self.testProject,self.timestamp))         # xlwt对象的保存方法;
-            print('保存完成！---> CalendarList_Result_%s_%s.xls' % (self.testProject,self.timestamp))
+            fileName = "CalendarList_Result_%s_%s_%s.xls" % (self.testProject, self.testLanguage, self.timestamp)
+            wExcel.save(fileName)         # xlwt对象的保存方法;
+            print(self.test_parameters)
+            print('保存完成！---> %s' % fileName)
 
     def runTest(self):
         print("====== Run to Asterix calendar automation test! =====")
-        print("Project is %s, appkey is %s" % (self.testProject, self.appkey))
-        print('Test keywords is " %s " ' % self.testYear)
+        print(self.test_parameters)
         for i, j in zip(self.festivalsList, range(len(self.festivalsList))):
             self.postGetUrl(self.festivalsList[i])
             print("完成:%s/%s..." % (j + 1, len(self.festivalsList)))
