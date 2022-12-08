@@ -48,9 +48,10 @@ class AutoGlobalSearch(object):
                 print("%s/%s 正在搜索【%s】..." % (qn+1, len(queryList), queryList[qn]))
                 self.d.xpath('//*[@resource-id="com.elektrobit.aed.home.app:id/search_text"]').set_text(queryList[qn])
                 self.d.xpath('//*[@resource-id="com.elektrobit.aed.home.app:id/icon_search"]').click()  # 点击搜索
-                for i in range(10):
+                for i in range(1,10):
                     if self.d.xpath('//*[@resource-id="com.elektrobit.aed.home.app:id/loading_tv"]').exists is True:
                         print('loading %ss ...' % str(i*5))
+                        sleep(5)
                     else:
                         break
                 resultData = []

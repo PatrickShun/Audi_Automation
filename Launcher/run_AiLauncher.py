@@ -50,8 +50,8 @@ class AutoAiLauncher(object):
 
 
     def main_run(self):
-        # self.test_reset_launcher()
-        # self.test_recoWidget_move()
+        self.test_reset_launcher()
+        self.test_recoWidget_move()
         self.get_widget_index()
 
 
