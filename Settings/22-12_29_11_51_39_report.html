@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Asterix_Settings_AutomationTeat_Report</title>
+    <meta name="generator" content="HTMLTestRunner 0.8.2"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    
+<style type="text/css" media="screen">
+body        { font-family: verdana, arial, helvetica, sans-serif; font-size: 80%; }
+table       { font-size: 100%; }
+pre         { }
+
+/* -- heading ---------------------------------------------------------------------- */
+h1 {
+	font-size: 16pt;
+	color: gray;
+}
+.heading {
+    margin-top: 0ex;
+    margin-bottom: 1ex;
+}
+
+.heading .attribute {
+    margin-top: 1ex;
+    margin-bottom: 0;
+}
+
+.heading .description {
+    margin-top: 4ex;
+    margin-bottom: 6ex;
+}
+
+/* -- css div popup ------------------------------------------------------------------------ */
+a.popup_link {
+}
+
+a.popup_link:hover {
+    color: red;
+}
+
+.popup_window {
+    display: none;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    /*border: solid #627173 1px; */
+    padding: 10px;
+    background-color: #E6E6D6;
+    font-family: "Lucida Console", "Courier New", Courier, monospace;
+    text-align: left;
+    font-size: 8pt;
+    width: 500px;
+}
+
+}
+/* -- report ------------------------------------------------------------------------ */
+#show_detail_line {
+    margin-top: 3ex;
+    margin-bottom: 1ex;
+}
+#result_table {
+    width: 80%;
+    border-collapse: collapse;
+    border: 1px solid #777;
+}
+#header_row {
+    font-weight: bold;
+    color: white;
+    background-color: #777;
+}
+#result_table td {
+    border: 1px solid #777;
+    padding: 2px;
+}
+#total_row  { font-weight: bold; }
+.passClass  { background-color: #6c6; }
+.failClass  { background-color: #c60; }
+.errorClass { background-color: #c00; }
+.passCase   { color: #6c6; }
+.failCase   { color: #c60; font-weight: bold; }
+.errorCase  { color: #c00; font-weight: bold; }
+.hiddenRow  { display: none; }
+.testcase   { margin-left: 2em; }
+
+
+/* -- ending ---------------------------------------------------------------------- */
+#ending {
+}
+
+</style>
+
+</head>
+<body>
+<script language="javascript" type="text/javascript"><!--
+output_list = Array();
+
+/* level - 0:Summary; 1:Failed; 2:All */
+function showCase(level) {
+    trs = document.getElementsByTagName("tr");
+    for (var i = 0; i < trs.length; i++) {
+        tr = trs[i];
+        id = tr.id;
+        if (id.substr(0,2) == 'ft') {
+            if (level < 1) {
+                tr.className = 'hiddenRow';
+            }
+            else {
+                tr.className = '';
+            }
+        }
+        if (id.substr(0,2) == 'pt') {
+            if (level > 1) {
+                tr.className = '';
+            }
+            else {
+                tr.className = 'hiddenRow';
+            }
+        }
+    }
+}
+
+
+function showClassDetail(cid, count) {
+    var id_list = Array(count);
+    var toHide = 1;
+    for (var i = 0; i < count; i++) {
+        tid0 = 't' + cid.substr(1) + '.' + (i+1);
+        tid = 'f' + tid0;
+        tr = document.getElementById(tid);
+        if (!tr) {
+            tid = 'p' + tid0;
+            tr = document.getElementById(tid);
+        }
+        id_list[i] = tid;
+        if (tr.className) {
+            toHide = 0;
+        }
+    }
+    for (var i = 0; i < count; i++) {
+        tid = id_list[i];
+        if (toHide) {
+            document.getElementById('div_'+tid).style.display = 'none'
+            document.getElementById(tid).className = 'hiddenRow';
+        }
+        else {
+            document.getElementById(tid).className = '';
+        }
+    }
+}
+
+
+function showTestDetail(div_id){
+    var details_div = document.getElementById(div_id)
+    var displayState = details_div.style.display
+    // alert(displayState)
+    if (displayState != 'block' ) {
+        displayState = 'block'
+        details_div.style.display = 'block'
+    }
+    else {
+        details_div.style.display = 'none'
+    }
+}
+
+
+function html_escape(s) {
+    s = s.replace(/&/g,'&amp;');
+    s = s.replace(/</g,'&lt;');
+    s = s.replace(/>/g,'&gt;');
+    return s;
+}
+
+/* obsoleted by detail in <div>
+function showOutput(id, name) {
+    var w = window.open("", //url
+                    name,
+                    "resizable,scrollbars,status,width=800,height=450");
+    d = w.document;
+    d.write("<pre>");
+    d.write(html_escape(output_list[id]));
+    d.write("\n");
+    d.write("<a href='javascript:window.close()'>close</a>\n");
+    d.write("</pre>\n");
+    d.close();
+}
+*/
+--></script>
+
+<div class='heading'>
+<h1>Asterix_Settings_AutomationTeat_Report</h1>
+<p class='attribute'><strong>Start Time:</strong> 2022-12-29 11:51:39</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:01.817921</p>
+<p class='attribute'><strong>Status:</strong> Error 1</p>
+
+<p class='description'>Settings_Stage</p>
+</div>
+
+
+
+<p id='show_detail_line'>Show
+<a href='javascript:showCase(0)'>Summary</a>
+<a href='javascript:showCase(1)'>Failed</a>
+<a href='javascript:showCase(2)'>All</a>
+</p>
+<table id='result_table'>
+<colgroup>
+<col align='left' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+</colgroup>
+<tr id='header_row'>
+    <td>Test Group/Test case</td>
+    <td>Count</td>
+    <td>Pass</td>
+    <td>Fail</td>
+    <td>Error</td>
+    <td>View</td>
+</tr>
+
+<tr class='errorClass'>
+    <td>AudiSettings</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1</td>
+    <td><a href="javascript:showClassDetail('c1',1)">Detail</a></td>
+</tr>
+
+<tr id='ft1.1' class='none'>
+    <td class='errorCase'><div class='testcase'>test12_Asterix_UC_Settings_Default_Map_Baidupop_001</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.1')" >
+        error</a>
+
+    <div id='div_ft1.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft1.1: [D 221229 11:51:39 __init__:317] [pid:10712] [1b4889cf] device 1b4889cf is online
+[I 221229 11:51:40 init:156] uiautomator2 version: 2.16.19
+[D 221229 11:51:40 init:167] Shell: ('/data/local/tmp/atx-agent', 'server', '--stop')
+[D 221229 11:51:40 init:296] Real version: [0, 10, 0], Expect version: [0, 10, 0]
+[D 221229 11:51:40 init:167] Shell: ('/data/local/tmp/atx-agent', 'server', '--nouia', '-d', '--addr', '127.0.0.1:7912')
+[I 221229 11:51:40 init:350] Check atx-agent version
+[D 221229 11:51:40 init:359] Forward: local:tcp:44571 -&gt; remote:tcp:7912
+[D 221229 11:51:41 init:359] Forward: local:tcp:44571 -&gt; remote:tcp:7912
+[D 221229 11:51:41 init:362] atx-agent version 0.10.0
+[D 221229 11:51:41 init:366] device wlan ip: route ip+net: no such network interface
+Traceback (most recent call last):
+  File "./run_Settings.py", line 255, in test12_Asterix_UC_Settings_Default_Map_Baidupop_001
+    self.openAPP.install_BaiduMap()
+  File "/home/xslan/Documents/03_Audi_UI_Automation/Settings/openAPP.py", line 60, in install_BaiduMap
+    self.idevice.app_install(baidumap_path)
+  File "/home/xslan/.local/lib/python3.6/site-packages/uiautomator2/__init__.py", line 1388, in app_install
+    raise RuntimeError(ret.output, ret.exit_code)
+RuntimeError: ('Error: Failed to parse APK file: /data/local/tmp/_tmp.apk\n\nException occurred while executing:\njava.lang.IllegalArgumentException: Error: Failed to parse APK file: /data/local/tmp/_tmp.apk\n\tat com.android.server.pm.PackageManagerShellCommand.setParamsSize(PackageManagerShellCommand.java:338)\n\tat com.android.server.pm.PackageManagerShellCommand.runInstall(PackageManagerShellCommand.java:906)\n\tat com.android.server.pm.PackageManagerShellCommand.onCommand(PackageManagerShellCommand.java:158)\n\tat android.os.ShellCommand.exec(ShellCommand.java:103)\n\tat com.android.server.pm.PackageManagerService.onShellCommand(PackageManagerService.java:21504)\n\tat android.os.Binder.shellCommand(Binder.java:634)\n\tat android.os.Binder.onTransact(Binder.java:532)\n\tat android.content.pm.IPackageManager$Stub.onTransact(IPackageManager.java:2821)\n\tat com.android.server.pm.PackageManagerService.onTransact(PackageManagerService.java:3889)\n\tat android.os.Binder.execTransact(Binder.java:731)\nCaused by: android.content.pm.PackageParser$PackageParserException: Failed to parse /data/local/tmp/_tmp.apk\n\tat android.content.pm.PackageParser.parseApkLiteInner(PackageParser.java:1590)\n\tat android.content.pm.PackageParser.parseApkLite(PackageParser.java:1575)\n\tat com.android.server.pm.PackageManagerShellCommand.setParamsSize(PackageManagerShellCommand.java:331)\n\t... 9 more\n', 255)
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='total_row'>
+    <td>Total</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1</td>
+    <td>&nbsp;</td>
+</tr>
+</table>
+
+<div id='ending'>&nbsp;</div>
+
+</body>
+</html>
